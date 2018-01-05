@@ -17,6 +17,7 @@ def run(args):
         'database': args.database,
         'username': args.username,
         'password': args.password,
+        'port': args.port,
     }
 
     avenger = ""
@@ -25,8 +26,8 @@ def run(args):
                 "Luke Cage", "Falcon", "Scarlet Witch"]
 
     try:
-        uri = "mongodb://{username}:{password}@{host}/{database}".format(**settings) if \
-            settings['username'] else "mongodb://{}/{}".format(settings['host'], settings['database'])
+        uri = "mongodb://{username}:{password}@{host}:{port}/{database}".format(**settings) if \
+            settings['username'] else "mongodb://{}:{}/{}".format(settings['host'], settings['port'], settings['database'])
         conn = pymongo.MongoClient(uri)
     except Exception as ex:
         print("Error: {}\ntraceback: {}".format(str(ex), traceback.format_exc()))
@@ -69,6 +70,8 @@ if __name__ == '__main__':
                         help='Mongodb username')
     parser.add_argument('--password', type=str, action='store', const=None,
                         help='Mongodb password')
+    parser.add_argument('--port', type=int, action='store', const=27017, default=27017, nargs='?',
+                        help='Mongodb port')
 
     args = parser.parse_args()
     run(args)
